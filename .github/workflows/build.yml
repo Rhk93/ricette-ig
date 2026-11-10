@@ -34,7 +34,11 @@ jobs:
           cp AndroidManifest.xml app/src/main/AndroidManifest.xml
           cp ic_app.xml app/src/main/res/drawable/ic_app.xml
           cp MainActivity.java app/src/main/java/it/ricette/ig/MainActivity.java
-          cp index.html app/src/main/assets/index.html
+          HTML=$(ls -1 | grep -i '^index.*\.htm' | head -1)
+          if [ -z "$HTML" ]; then HTML=$(ls -1 | grep -i '\.htm' | head -1); fi
+          if [ -z "$HTML" ]; then echo "MANCA index.html: caricalo nel repository"; ls -la; exit 1; fi
+          echo "Uso $HTML"
+          cp "$HTML" app/src/main/assets/index.html
       - name: Compila
         run: gradle :app:assembleRelease --no-daemon --stacktrace
       - name: Pubblica la release
